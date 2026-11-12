@@ -1,0 +1,6 @@
+id=a16_native_aod_coexist
+name=OneUI 9 Native AOD Enabler
+version=0.4-experimental
+versionCode=4
+author=Raphael Solis
+description=Enables Always On Display on devices running on OneUI 9.

@@ -1,0 +1,2 @@
+<?xml version='1.0' encoding='utf-8'?>
+<config><component-override package="com.samsung.android.app.aodservice"><component class="com.samsung.android.app.facewidget.plugin.PluginKeyguardStatusViewImpl" enabled="false" /><component class="com.samsung.android.app.cover.plugin.PluginViewCoverImpl" enabled="false" /></component-override></config>
