@@ -1,0 +1,6 @@
+/.signing/
+/build/
+/dist/
+/activation/
+/__pycache__/
+*.pyc
