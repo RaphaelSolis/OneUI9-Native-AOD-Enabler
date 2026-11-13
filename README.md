@@ -1,6 +1,6 @@
 # One UI 9 Native AOD Enabler
 
-Adds Samsung's Always On Display to Galaxy A16 on One UI 9.
+Adds Samsung's Always On Display to devices running on One UI 9.
 
 Tested on SM-A165F, firmware A165FXXUBEZJ7.
 
