@@ -5,6 +5,7 @@ import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import java.lang.ref.WeakReference;
@@ -31,6 +32,9 @@ final class ThemeViewHook {
     private static WeakReference<ViewGroup> mountedParent = new WeakReference<>(null);
     private static int nativeVisibility;
     private static float nativeAlpha;
+    private static WeakReference<ViewTreeObserver> drawObserver = new WeakReference<>(null);
+    private static final ViewTreeObserver.OnPreDrawListener DRAW_GUARD = ThemeViewHook::beforeDraw;
+    private static boolean redrawReported;
 
     static synchronized void installStock(ClassLoader loader) {
         try {
@@ -180,12 +184,55 @@ final class ThemeViewHook {
             nativeView.setVisibility(View.VISIBLE);
             nativeView.setAlpha(1f);
             view.setVisibility(View.GONE);
+            // ClockPack can re-show the stock view after refresh() or initViews().
+            // Check at the last point before rendering, only while this theme is mounted.
+            ViewTreeObserver observer = parent.getViewTreeObserver();
+            observer.addOnPreDrawListener(DRAW_GUARD);
+            drawObserver = new WeakReference<>(observer);
+            redrawReported = false;
             log("Mounted native themed AOD clock in stock clock container");
             return;
         }
     }
 
+    private static boolean beforeDraw() {
+        View original = hidden.get();
+        View nativeView = mounted.get();
+        ViewGroup parent = mountedParent.get();
+        if (original == null || nativeView == null || parent == null) {
+            restore();
+            return true;
+        }
+        try {
+            Object owner = ui.get();
+            Object current = owner == null ? null : state.get(machine.get(owner));
+            if (current == null || !(Boolean) active.invoke(current)
+                    || !original.isAttachedToWindow() || !dozing.getBoolean(original)
+                    || nativeView.getParent() != parent) {
+                restore();
+                return false;
+            }
+            if (original.getVisibility() == View.VISIBLE) {
+                original.setVisibility(View.GONE);
+                if (!redrawReported) {
+                    redrawReported = true;
+                    log("Suppressed stock clock redraw over AOD theme");
+                }
+                // Let the holder finish laying out before drawing the selected clock.
+                return false;
+            }
+            return true;
+        } catch (Throwable failure) {
+            restore();
+            log("Theme draw guard stopped; restored stock clock: " + failure);
+            return false;
+        }
+    }
+
     private static void restore() {
+        ViewTreeObserver observer = drawObserver.get();
+        if (observer != null && observer.isAlive()) observer.removeOnPreDrawListener(DRAW_GUARD);
+        drawObserver.clear();
         View nativeView = mounted.get();
         ViewGroup parent = mountedParent.get();
         if (nativeView != null && parent != null && nativeView.getParent() == parent) {

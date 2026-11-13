@@ -14,7 +14,7 @@ Keep stock ClockPack enabled. If you use NeoZygisk, turn off **Unmount modules**
 
 ## AOD themes
 
-If an applied theme still shows the default clock, install `OneUI9-AOD-Theme-Fix.apk` from the [theme fix release](https://github.com/RaphaelSolis/OneUI9-Native-AOD-Enabler/releases/tag/aod-theme-fix-v0.3). Enable it in Vector or LSPosed for **System UI** and **Always On Display**, then reboot.
+If an applied theme still shows the default clock, install `OneUI9-AOD-Theme-Fix.apk` from the [theme fix release](https://github.com/RaphaelSolis/OneUI9-Native-AOD-Enabler/releases/tag/aod-theme-fix-v0.3.1). Enable it in Vector or LSPosed for **System UI** and **Always On Display**, then reboot.
 
 ## Remove
 

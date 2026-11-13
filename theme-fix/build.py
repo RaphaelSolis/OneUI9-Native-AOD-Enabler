@@ -163,7 +163,7 @@ def main():
     report = {
         'artifact': apk.name, 'sha256': checksum, 'size_bytes': apk.stat().st_size,
         'package': 'org.raphaelsolis.aodbattery', 'author': 'Raphael Solis',
-        'version': '0.3', 'entry_point': entry,
+        'version': '0.3.1', 'entry_point': entry,
         'dex_defined_classes': definitions, 'signature_verification': verification,
         'compile_only_api_bundled': False, 'installed': False, 'activated': False,
         'visual_behavior_tested': False,
